@@ -10,7 +10,6 @@
 
 ;; the stream for the prime number
 ;; Sieve of Eratosthenes
-;; I can improve this but it can not be stream?
 (defvar *prime-stream*
   (let ((prime-lst '()))
     (labels ((g (lst k)
