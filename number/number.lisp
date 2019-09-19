@@ -169,17 +169,21 @@
 ;; a_n = c_1a_{n-1} + c_2a_{n-2} + ... + c_ka_{n-k}
 ;; xs for the lst for inital data
 ;; example xs: '(a_1, a_2 , ... , a_k) cs: '(c_k, c_{k-1} , ... , c_1)
-;; This stream starts to k+1th element of {a_i}
+;; This stream starts to 1st element of {a_i}
 
 (defun make-lin-recurr-seq-stream (xs cs)
   (if (not (= (length xs) (length cs)))
       (error "The length of inital data and the length of coefficients are must be equal")
-      (labels ((f (xs)
-		 (let ((ans (reduce '+ (mapcar '* xs cs) :initial-value 0)))
-		   (cons ans
-			 (lambda () (f (reverse (cons ans (reverse (cdr xs))))))
-			 ))))
-	(lambda () (f xs)))))
+      (labels ((f (i xs)
+		 (if (< i (length xs)) (cons (nth i xs)
+					     (lambda () (f (+ 1 i) xs)))
+		     (let ((ans (reduce '+ (mapcar '* xs cs) :initial-value 0)))
+		       (cons ans
+			     (lambda () (f i
+					   (reverse
+					    (cons ans (reverse (cdr xs))))))))
+			     )))
+	(lambda () (f 0 xs)))))
 
 ;; This function make the Zeckendorf's representation for n
 ;; if n = u_{e_1} + .. + u_{e_r} where e_1 << e_2 << .. << e_r, {u_i} is
@@ -188,7 +192,7 @@
 
 (defun zecken-rep (n)
   (let ((fibo_lst (reverse (stream-until-k
-			    (make-lin-recurr-seq-stream '(0 1) '(1 1))
+			    (make-lin-recurr-seq-stream '(1 1) '(1 1))
 			    n))))
     (labels ((f (n lst)
 	       (let ((head (car lst))
