@@ -124,6 +124,24 @@
 		(remove 0 rem-lst)
 		:initial-value 1))))
 
+;; function for solve linear modulus equation
+;; ex: ax-b \equiv 0 \pmod{n} => (a b n)
+;; a must be not equal to zero
+
+(defun lin-mod-eqn-solver (a b n)
+  (let* ((sols (rev-gcd a n))
+	 (d (gcdsol-gcd sols))
+	 (x (car (gcdsol-sol sols))))
+    (cond ((= d 1) (mod (* b x) n))
+	  ((> (mod b d) 0) nil)
+	  (t (let ((tmp (/ n d))
+		   (tmp2 (/ b d)))
+	       (labels ((fun (i f)
+			  (if (or (> i f) (= i f)) '()
+			      (cons (mod (+ (* tmp2 x) (* i tmp)) n)
+				    (fun (+ i 1) f)))))
+		 (sort (fun 0 d) '<)))))))
+
 ;; Function for Rabin-Miller Test
 ;; For n < 3*10**(25), '(2 3 5 7 11 13 17 19 23 29 31 37 41) is the
 ;; sufficient witness for prove n is prime.
@@ -131,7 +149,6 @@
 
 (defun Rabin-Miller-Test (xs n)
   "xs is a list for Rabin-Miller witness"
-  (declare (optimize speed) (integer n))
   (and (oddp n)
        (or (= n 2)
 	   (let* ((digit-lst (n-to-binary-lst (- n 1)))
@@ -201,6 +218,12 @@
 		       ((> 0 (- n head)) (f n tail))
 		       (t (cons head (f (- n head) tail)))))))
       (reverse (f n fibo_lst)))))
+
+
+;; Legendre Symbol
+;; p must be a prime
+(defun Legendre-sym (n p)
+  (mod-nth-pow n (/ (- p 1) 2) p))
     
 		   
 			     
