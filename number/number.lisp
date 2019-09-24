@@ -29,6 +29,43 @@
 		     (f (+ n 1))))))
       (lambda () (f 2)))))
 
+;; the stream for the subsequent number
+;; 1 2 3 4 5 ..
+(defvar *subsequent-num-stream*
+  (labels ((f (n)
+	     (cons n (lambda () (f (+ n 1))))))
+    (lambda () (f 1))))
+
+;; function for generate a stream for modular power
+;; a**(2**i) (mod p)
+
+(defun make-mod-pow-two-stream (a p)
+  "Make a**(2**i) (mod p) stream, use stream-to-lst to get elements"
+  (labels ((f (n)
+	     (let ((k (rem n p)))
+	       (cons k (lambda () (f (* k k)))))))
+    (lambda () (f a))))
+
+;; Make a stream for the sequence defined by linear recurrence relation
+;; a_n = c_1a_{n-1} + c_2a_{n-2} + ... + c_ka_{n-k}
+;; xs for the lst for inital data
+;; example xs: '(a_1, a_2 , ... , a_k) cs: '(c_k, c_{k-1} , ... , c_1)
+;; This stream starts to 1st element of {a_i}
+
+(defun make-lin-recurr-seq-stream (xs cs)
+  (if (not (= (length xs) (length cs)))
+      (error "The length of inital data and the length of coefficients are must be equal")
+      (labels ((f (i xs)
+		 (if (< i (length xs)) (cons (nth i xs)
+					     (lambda () (f (+ 1 i) xs)))
+		     (let ((ans (reduce '+ (mapcar '* xs cs) :initial-value 0)))
+		       (cons ans
+			     (lambda () (f i
+					   (reverse
+					    (cons ans (reverse (cdr xs))))))))
+			     )))
+	(lambda () (f 0 xs)))))
+
 ;; functions for using stream
 
 (defun stream-to-lst (s n)
@@ -89,15 +126,7 @@
 	    :sol (g sollst)))))
 
 
-;; function for generate a stream for modular power
-;; a**(2**i) (mod p)
 
-(defun make-mod-pow-two-stream (a p)
-  "Make a**(2**i) (mod p) stream, use stream-to-lst to get elements"
-  (labels ((f (n)
-	     (let ((k (rem n p)))
-	       (cons k (lambda () (f (* k k)))))))
-    (lambda () (f a))))
 
 ;; function for change n to the binary lst
 ;; first binary digit of n is the first element of the result
@@ -181,27 +210,6 @@
 	       (g xs))))))
 
 
-
-;; Make a stream for the sequence defined by linear recurrence relation
-;; a_n = c_1a_{n-1} + c_2a_{n-2} + ... + c_ka_{n-k}
-;; xs for the lst for inital data
-;; example xs: '(a_1, a_2 , ... , a_k) cs: '(c_k, c_{k-1} , ... , c_1)
-;; This stream starts to 1st element of {a_i}
-
-(defun make-lin-recurr-seq-stream (xs cs)
-  (if (not (= (length xs) (length cs)))
-      (error "The length of inital data and the length of coefficients are must be equal")
-      (labels ((f (i xs)
-		 (if (< i (length xs)) (cons (nth i xs)
-					     (lambda () (f (+ 1 i) xs)))
-		     (let ((ans (reduce '+ (mapcar '* xs cs) :initial-value 0)))
-		       (cons ans
-			     (lambda () (f i
-					   (reverse
-					    (cons ans (reverse (cdr xs))))))))
-			     )))
-	(lambda () (f 0 xs)))))
-
 ;; This function make the Zeckendorf's representation for n
 ;; if n = u_{e_1} + .. + u_{e_r} where e_1 << e_2 << .. << e_r, {u_i} is
 ;; Fibonacci sequence
@@ -224,6 +232,25 @@
 ;; p must be a prime
 (defun Legendre-sym (n p)
   (mod-nth-pow n (/ (- p 1) 2) p))
+
+
+;; relative-prime-converter
+;; take n integers and make them to be relative primes to each other
+
+(defun convert-to-relative-prime (xs)
+  (labels ((f (lst a)
+	     (if (null lst) (list a)
+		 (let* ((head (car lst))
+			(tail (cdr lst))
+			(d (gcd a head)))
+		   (cons (/ head d) (f tail (/ a d))))))
+	   (g (lst xs)
+	     (if (null xs) lst
+		 (let ((head (car xs))
+		       (tail (cdr xs)))
+		   (g (f lst head) tail)))))
+    (g '() xs)))
+	     
     
 		   
 			     
