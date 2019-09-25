@@ -266,7 +266,7 @@
 	     (g (head)
 	       (if (null permu) '()
 		   (cons (f head permu) (g (car (car permu)))))))
-      (g 1))))
+      (g (car (car permu))))))
 
 ;; sgn function for permutation
 
