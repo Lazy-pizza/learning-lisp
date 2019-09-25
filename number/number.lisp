@@ -233,6 +233,16 @@
 (defun Legendre-sym (n p)
   (mod-nth-pow n (/ (- p 1) 2) p))
 
+;; mutually-primep
+
+(defun mutually-primep (xs)
+  (labels ((f (a lst)
+	     (null (remove-if (lambda (x) (= 1 (gcd a x))) lst))))
+    (or (null xs)
+	(let ((head (car xs))
+	      (tail (cdr xs)))
+	  (and (f head tail) (mutually-primep tail))))))
+
 
 ;; relative-prime-converter
 ;; take n integers and make them to be relative primes to each other
@@ -250,6 +260,30 @@
 		       (tail (cdr xs)))
 		   (g (f lst head) tail)))))
     (g '() xs)))
+
+;; CRT-Solver
+;; Use Chinese Reminder Theorem to solve system of lin mod eqn.
+;; Currently, it is only implemented in (m_i,m_j) = 1 case.
+;;  x \equiv 2 \pmod 3 x \equiv 3 \pmod 5 => '(2 3) '(3 5)
+;; result => (sol . M ) it means x \equiv sol \pmod M
+
+(defun CRT-Solver (rems mods)
+  (if (mutually-primep mods)
+      (let ((M (reduce '* mods :initial-value 1)))
+	(labels (( f (lst)
+		   (if (null lst) '()
+		       (let* ((head (car lst))
+			      (tail (cdr lst))
+			      (Mi (/ M head))
+			      (xi (car (gcdsol-sol (rev-gcd Mi head)))))
+			 (cons (mod (* Mi xi) M) (f tail))))))
+	  (cons (reduce (lambda (x y) (mod (+ x y) M))
+			(mapcar (lambda (x y) (mod (* x y) M)) rems (f mods))
+			:initial-value 0)
+		M)))
+      (error "Currently, CRT-Solver only implemented in (m_i,m_j) = 1.")))
+  
+  
 
 ;; decomp-permutation
 ;; take permutation  and decomp it
