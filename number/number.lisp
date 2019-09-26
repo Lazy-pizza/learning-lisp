@@ -8,6 +8,8 @@
   sol
   )
 
+;; ***** NUMBER-STREAM ******
+
 ;; the stream for the prime number
 ;; Sieve of Eratosthenes
 (defvar *prime-stream*
@@ -82,6 +84,10 @@
     (if (> v k) '()
 	(cons v (stream-until-k s k)))))
 
+;; ***** NUMBER-STREAM END *****
+
+
+;; ***** NUMBER-GCD *****
 
 ;; functions for calculate (x_1,...x_n) satisfying
 ;; a_1x_1 + a_2x_2 + ... + a_nx_n = d
@@ -125,8 +131,36 @@
 	    :gcd (gcdsol-gcd (car (last sollst)))
 	    :sol (g sollst)))))
 
+;; mutually-primep
 
+(defun mutually-primep (xs)
+  (labels ((f (a lst)
+	     (null (remove-if (lambda (x) (= 1 (gcd a x))) lst))))
+    (or (null xs)
+	(let ((head (car xs))
+	      (tail (cdr xs)))
+	  (and (f head tail) (mutually-primep tail))))))
 
+;; relative-prime-converter
+;; take n integers and make them to be relative primes to each other
+
+(defun convert-to-relative-prime (xs)
+  (labels ((f (lst a)
+	     (if (null lst) (list a)
+		 (let* ((head (car lst))
+			(tail (cdr lst))
+			(d (gcd a head)))
+		   (cons (/ head d) (f tail (/ a d))))))
+	   (g (lst xs)
+	     (if (null xs) lst
+		 (let ((head (car xs))
+		       (tail (cdr xs)))
+		   (g (f lst head) tail)))))
+    (g '() xs)))
+
+;; ***** NUMBER-GCD END *****
+
+;; ***** NUMBER-MOD-POW *****
 
 ;; function for change n to the binary lst
 ;; first binary digit of n is the first element of the result
@@ -153,6 +187,11 @@
 		(remove 0 rem-lst)
 		:initial-value 1))))
 
+;; ***** NUMBER-MOD-POW END *****
+
+
+;; ***** NUMBER-MOD-EQN *****
+
 ;; function for solve linear modulus equation
 ;; ex: ax-b \equiv 0 \pmod{n} => (a b n)
 ;; a must be not equal to zero
@@ -170,6 +209,39 @@
 			      (cons (mod (+ (* tmp2 x) (* i tmp)) n)
 				    (fun (+ i 1) f)))))
 		 (sort (fun 0 d) '<)))))))
+
+
+;; CRT-Solver
+;; Use Chinese Reminder Theorem to solve system of lin mod eqn.
+;; Currently, it is only implemented in (m_i,m_j) = 1 case.
+;;  x \equiv 2 \pmod 3 x \equiv 3 \pmod 5 => '(2 3) '(3 5)
+;; result => (sol . M ) it means x \equiv sol \pmod M
+
+(defun CRT-Solver (rems mods)
+  (if (mutually-primep mods)
+      (let ((M (reduce '* mods :initial-value 1)))
+	(labels (( f (lst)
+		   (if (null lst) '()
+		       (let* ((head (car lst))
+			      (tail (cdr lst))
+			      (Mi (/ M head))
+			      (xi (car (gcdsol-sol (rev-gcd Mi head)))))
+			 (cons (mod (* Mi xi) M) (f tail))))))
+	  (cons (reduce (lambda (x y) (mod (+ x y) M))
+			(mapcar (lambda (x y) (mod (* x y) M)) rems (f mods))
+			:initial-value 0)
+		M)))
+      (error "Currently, CRT-Solver only implemented in (m_i,m_j) = 1.")))
+
+;; Legendre Symbol
+;; p must be a prime
+(defun Legendre-sym (n p)
+  (mod-nth-pow n (/ (- p 1) 2) p))
+
+;; ***** NUMBER-MOD-EQN END *****
+
+
+;; ***** NUMBER-FACTOR *****
 
 ;; Function for Rabin-Miller Test
 ;; For n < 3*10**(25), '(2 3 5 7 11 13 17 19 23 29 31 37 41) is the
@@ -209,88 +281,20 @@
 				   (g (cdr xs)))))))
 	       (g xs))))))
 
+;; 
 
-;; This function make the Zeckendorf's representation for n
-;; if n = u_{e_1} + .. + u_{e_r} where e_1 << e_2 << .. << e_r, {u_i} is
-;; Fibonacci sequence
-;; then it gives '(u_{e_1} u_{e_2} ... u_{e_r})
-
-(defun zecken-rep (n)
-  (let ((fibo_lst (reverse (stream-until-k
-			    (make-lin-recurr-seq-stream '(1 1) '(1 1))
-			    n))))
-    (labels ((f (n lst)
-	       (let ((head (car lst))
-		     (tail (cdr lst)))
-		 (cond ((= 0 n) '())
-		       ((> 0 (- n head)) (f n tail))
-		       (t (cons head (f (- n head) tail)))))))
-      (reverse (f n fibo_lst)))))
+;; ***** NUMBER-FACTOR END *****
 
 
-;; Legendre Symbol
-;; p must be a prime
-(defun Legendre-sym (n p)
-  (mod-nth-pow n (/ (- p 1) 2) p))
 
-;; mutually-primep
+;; ***** NUMBER-PERMU *****
 
-(defun mutually-primep (xs)
-  (labels ((f (a lst)
-	     (null (remove-if (lambda (x) (= 1 (gcd a x))) lst))))
-    (or (null xs)
-	(let ((head (car xs))
-	      (tail (cdr xs)))
-	  (and (f head tail) (mutually-primep tail))))))
-
-
-;; relative-prime-converter
-;; take n integers and make them to be relative primes to each other
-
-(defun convert-to-relative-prime (xs)
-  (labels ((f (lst a)
-	     (if (null lst) (list a)
-		 (let* ((head (car lst))
-			(tail (cdr lst))
-			(d (gcd a head)))
-		   (cons (/ head d) (f tail (/ a d))))))
-	   (g (lst xs)
-	     (if (null xs) lst
-		 (let ((head (car xs))
-		       (tail (cdr xs)))
-		   (g (f lst head) tail)))))
-    (g '() xs)))
-
-;; CRT-Solver
-;; Use Chinese Reminder Theorem to solve system of lin mod eqn.
-;; Currently, it is only implemented in (m_i,m_j) = 1 case.
-;;  x \equiv 2 \pmod 3 x \equiv 3 \pmod 5 => '(2 3) '(3 5)
-;; result => (sol . M ) it means x \equiv sol \pmod M
-
-(defun CRT-Solver (rems mods)
-  (if (mutually-primep mods)
-      (let ((M (reduce '* mods :initial-value 1)))
-	(labels (( f (lst)
-		   (if (null lst) '()
-		       (let* ((head (car lst))
-			      (tail (cdr lst))
-			      (Mi (/ M head))
-			      (xi (car (gcdsol-sol (rev-gcd Mi head)))))
-			 (cons (mod (* Mi xi) M) (f tail))))))
-	  (cons (reduce (lambda (x y) (mod (+ x y) M))
-			(mapcar (lambda (x y) (mod (* x y) M)) rems (f mods))
-			:initial-value 0)
-		M)))
-      (error "Currently, CRT-Solver only implemented in (m_i,m_j) = 1.")))
-  
-  
-
-;; decomp-permutation
-;; take permutation  and decomp it
+;; decomp-permu
+;; take permutation and decomp it
 ;; your permutation must be look like this
 ;; '( '(1 . 2) '(2 . 1) '(3 . 3))
 
-(defun decomp-permutation (lst)
+(defun decomp-permu (lst)
   (let ((permu lst))
     (labels ((f (head p)
 	       (let ((flag (assoc head p)))
@@ -312,8 +316,29 @@
 		   (if (evenp (length head))
 		       (* -1 (f tail))
 		       (* 1 (f tail)))))))
-    (f (decomp-permutation permu))))
-	     
+    (f (decomp-permu permu))))
+
+;; ***** NUMBER PERMU END *****
+
+
+;; ***** WILL BE REMOVED *****
+
+;; This function make the Zeckendorf's representation for n
+;; if n = u_{e_1} + .. + u_{e_r} where e_1 << e_2 << .. << e_r, {u_i} is
+;; Fibonacci sequence
+;; then it gives '(u_{e_1} u_{e_2} ... u_{e_r})
+
+(defun zecken-rep (n)
+  (let ((fibo_lst (reverse (stream-until-k
+			    (make-lin-recurr-seq-stream '(1 1) '(1 1))
+			    n))))
+    (labels ((f (n lst)
+	       (let ((head (car lst))
+		     (tail (cdr lst)))
+		 (cond ((= 0 n) '())
+		       ((> 0 (- n head)) (f n tail))
+		       (t (cons head (f (- n head) tail)))))))
+      (reverse (f n fibo_lst)))))
 	       
 	     
   
