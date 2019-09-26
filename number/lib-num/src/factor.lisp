@@ -38,6 +38,28 @@
 				   (g (cdr xs)))))))
 	       (g xs))))))
 
-;; 
+;; Function for prime factorization --  Pollard pho method
+;; find a factor of integer n
+;; for generality I use f(x) = x**(2**k) + a (mod n) to generate x_i
+
+(defun pollard-rho-method (x0 k a n)
+  (let ((cache (list x0)))
+    (labels ((f (i)
+	       (if (< (length cache) (+ i 1))
+		   (let ((ans (rem (+ a (car (last (stream-to-lst
+						    (make-mod-pow-two-stream
+						     (f (- i 1)) n)
+						    k))))
+				   n)))
+		     (setq cache (append cache (list ans)) ans ans))
+		   (nth i cache)))
+	     (g (i d)
+	       (if (= 1 d)
+		   (let ((d (gcd (- (f (* 2 i)) (f i)) n)))
+		     (g (+ i 1) d))
+		   d)))
+      (g 1 1))))
+		   
+	
 
 ;; ***** NUMBER-FACTOR END *****

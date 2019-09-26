@@ -15,6 +15,7 @@
 	   "CRT-Solver"
 	   "Legendre-sym"
 	   "Rabin-Miller-Test"
+	   "pollard-rho-method"
 	   "decomp-permu"
 	   "sgn-permu"))
 	   
