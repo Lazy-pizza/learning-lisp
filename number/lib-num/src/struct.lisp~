@@ -1,6 +1,0 @@
-;; structure for store result of rev gcd: inversed Euclid Algorithm
-
-(defstruct gcdsol
-  gcd
-  sol
-  )
