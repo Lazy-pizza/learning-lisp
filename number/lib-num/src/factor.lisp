@@ -49,7 +49,7 @@
 		   (let ((ans (rem (+ a (car (last (stream-to-lst
 						    (make-mod-pow-two-stream
 						     (f (- i 1)) n)
-						    k))))
+						    (+ k 1)))))
 				   n)))
 		     (setq cache (append cache (list ans)) ans ans))
 		   (nth i cache)))
