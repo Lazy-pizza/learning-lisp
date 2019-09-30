@@ -43,22 +43,27 @@
 ;; for generality I use f(x) = x**(2**k) + a (mod n) to generate x_i
 
 (defun pollard-rho-method (x0 k a n)
-  (let ((cache (list x0)))
-    (labels ((f (i)
-	       (if (< (length cache) (+ i 1))
-		   (let ((ans (rem (+ a (car (last (stream-to-lst
-						    (make-mod-pow-two-stream
-						     (f (- i 1)) n)
-						    (+ k 1)))))
-				   n)))
-		     (setq cache (append cache (list ans)) ans ans))
-		   (nth i cache)))
-	     (g (i d)
-	       (if (= 1 d)
-		   (let ((d (gcd (- (f (* 2 i)) (f i)) n)))
-		     (g (+ i 1) d))
-		   d)))
-      (g 1 1))))
+  (labels ((f (x)
+	     (rem (+ a (car (last (stream-to-lst
+				   (make-mod-pow-two-stream x n)
+				   (+ k 1)))))
+				   n))
+	   (g (d tmp1 tmp2)
+	     (if (> d 1) d
+		 (let* ((x2 (f (f tmp1)))
+			(x1 (f tmp2))
+			(d (gcd (- x2 x1) n)))
+		   (g d x2 x1)))))
+    (g 1 x0 x0)))
+	       
+
+(defun full-factor (n)
+  (cond ((= n 1) '())
+	((Rabin-Miller-Test '(2 3 5 7 11 13 17 19 23 29 31 37 41) n)
+	 (cons n '()))
+	(t (let ((ans (pollard-rho-method 3 10 1 n)))
+	     (cons ans (full-factor (/ n ans)))))))
+  
 		   
 	
 
