@@ -1,7 +1,8 @@
 ;; This is an example lisp program for Zeckendorf's representation
 
 (require 'asdf)
-(asdf:load-system "lib-num")
+(asdf:load-system :lib-num)
+(in-package :lib-num)
 
 ;; This function make the Zeckendorf's representation for n
 ;; if n = u_{e_1} + .. + u_{e_r} where e_1 << e_2 << .. << e_r, {u_i} is

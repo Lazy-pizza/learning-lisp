@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-FACTOR *****
 
 ;; Function for Rabin-Miller Test

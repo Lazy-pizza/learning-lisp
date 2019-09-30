@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-MOD-EQN *****
 
 ;; function for solve linear modulus equation

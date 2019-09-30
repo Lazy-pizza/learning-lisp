@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-GCD *****
 
 ;; functions for calculate (x_1,...x_n) satisfying

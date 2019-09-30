@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-PERMU *****
 
 ;; decomp-permu

@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-STREAM ******
 
 ;; the stream for the prime number

@@ -7,8 +7,7 @@
 	       (:module "src"
 			:depends-on ("package")
 			:serial t
-			:components ((:file "declare")
-				     (:file "stream")
+			:components ((:file "stream")
 				     (:file "gcd")
 				     (:file "mod-pow")
 				     (:file "mod-eqn")

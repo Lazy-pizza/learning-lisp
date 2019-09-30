@@ -1,3 +1,4 @@
+(in-package :lib-num)
 ;; ***** NUMBER-MOD-POW *****
 
 ;; function for change n to the binary lst
