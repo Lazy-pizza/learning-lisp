@@ -47,4 +47,44 @@
 (defun Legendre-sym (n p)
   (mod-nth-pow n (/ (- p 1) 2) p))
 
+;; use Tonelli-Shanks Algorithm to solve quadratic modular equation
+;; only implemented on prime case
+
+(defun quad-mod-eqn-solver (n p)
+  (labels ((q (n s)
+	     (if (evenp n) (q (/ n 2) (+ s 1))
+		 (cons n s)))
+	   (find-non-quad (n)
+	     (if (= (- p 1) (Legendre-sym n p)) n
+		 (find-non-quad (random (- p 1)))))
+	   (f (M c h R)
+	     (cond ((= h 0) 0)
+		   ((= h 1) R)
+		   (t (let* ((i (length (stream-until-cond
+					 (lambda (x) (= x 1))
+					 (make-mod-pow-two-stream
+					  h
+					  p))))
+			     (b (car (last (stream-to-lst
+					    (make-mod-pow-two-stream
+					     c
+					     p)
+					     (- M i)))))
+			     (c (rem (* b b) p)))
+			(f i c (rem (* h c) p) (rem (* R b) p)))))))
+    (if (= (- p 1) (Legendre-sym n p)) nil
+	(let* ((pr (q (- p 1) 0))
+	       (head (car pr))
+	       (tail (cdr pr))
+	       (solv (f tail
+			(mod-nth-pow (find-non-quad 2) head p)
+			(mod-nth-pow n head p)
+			(mod-nth-pow n (/ (+ head 1) 2) p))))
+	  (if (= 0 solv) (list solv)
+	      (list solv (- p solv)))))))
+					  
+	      
+  
+
+
 ;; ***** NUMBER-MOD-EQN END *****

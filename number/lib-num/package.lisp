@@ -4,7 +4,9 @@
            #:make-mod-pow-two-stream
 	   #:make-lin-recurr-seq-stream
 	   #:stream-to-lst
-	   #:stream-until-k)
+	   #:stream-until-k
+	   #:stream-find-cond
+	   #:stream-until-cond)
   (:export #:rev-gcd
 	   #:rev-gcd-lst
 	   #:mutually-primep
@@ -12,7 +14,8 @@
   (:export #:mod-nth-pow
 	   #:lin-mod-eqn-solver
 	   #:CRT-Solver
-	   #:Legendre-sym)
+	   #:Legendre-sym
+	   #:quad-mod-eqn-solver)
   (:export #:Rabin-Miller-Test
 	   #:pollard-rho-method
 	   #:full-factor)
