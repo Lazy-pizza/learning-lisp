@@ -4,23 +4,16 @@
 ;; the stream for the prime number
 ;; Sieve of Eratosthenes
 (defvar *prime-stream*
-  (let ((prime-lst '()))
-    (labels ((g (lst k)
-	       (if (null lst) '()
-		   (let ((head (car lst))
-			 (tail (cdr lst)))
-		     (if (> head k) '()
-			 (cons head (g tail k))))))
-	     (f (n)
-	       (let* ((k (floor (sqrt n)))
-		      (filtered-plst (remove-if (lambda (x)
-						  (> (rem n x) 0))
-						(g (reverse prime-lst) k))))
-		 (if (null filtered-plst)
-		     (cons (car (setq prime-lst (cons n prime-lst)))
-			   (lambda () (f (+ n 1))))
-		     (f (+ n 1))))))
-      (lambda () (f 2)))))
+  (labels ((f (n)
+	     (labels ((g (i)
+			(cond ((> i (floor (sqrt n))) n)
+			      ((= 0 (rem n i)) nil)
+			      (t (g (+ i 1))))))
+	       (let ((prime (g 2)))
+		 (if prime
+		     (cons prime (lambda () (f (+ n 1))))
+		     (f (+ n 1)))))))
+    (lambda () (f 2))))
 
 ;; function for generate a stream for modular power
 ;; a**(2**i) (mod p)
