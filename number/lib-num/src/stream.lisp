@@ -21,9 +21,9 @@
 (defun make-mod-pow-two-stream (a p)
   "Make a**(2**i) (mod p) stream, use stream-to-lst to get elements"
   (labels ((f (n)
-	     (let ((k (mod n p)))
+	     (let ((k (rem n p)))
 	       (cons k (lambda () (f (* k k)))))))
-    (lambda () (f a))))
+    (lambda () (f (mod a p)))))
 
 ;; Make a stream for the sequence defined by linear recurrence relation
 ;; a_n = c_1a_{n-1} + c_2a_{n-2} + ... + c_ka_{n-k}

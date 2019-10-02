@@ -6,19 +6,19 @@
 	   #:stream-to-lst
 	   #:stream-until-k
 	   #:stream-find-cond
-	   #:stream-until-cond)
-  (:export #:rev-gcd
+	   #:stream-until-cond
+	   #:rev-gcd
 	   #:rev-gcd-lst
 	   #:mutually-primep
-	   #:convert-to-mutually-prime)
-  (:export #:mod-nth-pow
+	   #:convert-to-mutually-prime
+	   #:mod-nth-pow
 	   #:lin-mod-eqn-solver
 	   #:CRT-Solver
 	   #:Legendre-sym
-	   #:quad-mod-eqn-solver)
-  (:export #:Rabin-Miller-Test
+	   #:quad-mod-eqn-solver
+	   #:Rabin-Miller-Test
 	   #:pollard-rho-method
-	   #:full-factor)
-  (:export #:decomp-permu
+	   #:full-factor
+	   #:decomp-permu
 	   #:sgn-permu))
 	   
