@@ -28,7 +28,7 @@
 (defun make-mod-pow-two-stream (a p)
   "Make a**(2**i) (mod p) stream, use stream-to-lst to get elements"
   (labels ((f (n)
-	     (let ((k (rem n p)))
+	     (let ((k (mod n p)))
 	       (cons k (lambda () (f (* k k)))))))
     (lambda () (f a))))
 
@@ -67,5 +67,19 @@
 	 (s (cdr pr)))
     (if (> v k) '()
 	(cons v (stream-until-k s k)))))
+
+(defun stream-find-cond (f s)
+  (let* ((pr (funcall s))
+	 (v (car pr))
+	 (s (cdr pr)))
+    (if (funcall f v) v
+	(append '() (stream-find-cond f s)))))
+
+(defun stream-until-cond (f s)
+  (let* ((pr (funcall s))
+	 (v (car pr))
+	 (s (cdr pr)))
+    (if (funcall f v) '()
+	(cons v (stream-until-cond f s)))))
 
 ;; ***** NUMBER-STREAM END *****
