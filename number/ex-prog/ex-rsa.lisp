@@ -8,7 +8,7 @@
 (setf *random-state* (make-random-state t))
 
 (defun str-to-num (str)
-  (let* ((cs (coerce (remove '#\' str) 'list)))
+  (let* ((cs (coerce str 'list)))
     (reduce (lambda (tmp x) (+ (* 100 tmp) (- (char-code x) 26)))
 	    cs :initial-value 0)))
 
