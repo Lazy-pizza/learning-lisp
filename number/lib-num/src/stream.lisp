@@ -47,6 +47,16 @@
 
 ;; functions for using stream
 
+(defun stream-nth (s n)
+  (labels ((f (s i)
+	     (let* ((pr (funcall s))
+		    (v (car pr))
+		    (s (cdr pr)))
+	       (cond ((= i n) v)
+		     ((< i n) (f s (+ i 1)))
+		     (t nil)))))
+    (f s 1)))
+
 (defun stream-to-lst (s n)
   (let* ((pr (funcall s))
 	 (v (car pr))

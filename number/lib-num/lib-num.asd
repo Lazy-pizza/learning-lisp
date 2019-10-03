@@ -12,4 +12,5 @@
 				     (:file "mod-pow")
 				     (:file "mod-eqn")
 				     (:file "factor")
+				     (:file "rsa")
 				     (:file "permu")))))

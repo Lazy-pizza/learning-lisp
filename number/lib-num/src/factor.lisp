@@ -1,6 +1,10 @@
 (in-package :lib-num)
 ;; ***** NUMBER-FACTOR *****
 
+(defun make-random-lst (max n)
+  (if (= 0 n) '()
+      (cons (random max) (make-random-lst max (- n 1)))))
+
 ;; Function for Rabin-Miller Test
 ;; For n < 3*10**(25), '(2 3 5 7 11 13 17 19 23 29 31 37 41) is the
 ;; sufficient witness for prove n is prime.
@@ -38,6 +42,9 @@
 			      (and (> (rem n head) 0) (f head)
 				   (g (cdr xs)))))))
 	       (g xs))))))
+
+(defun primep (n)
+  (Rabin-Miller-Test (make-random-lst (- n 1) 100) n)) 
 
 ;; Function for prime factorization --  Pollard pho method
 ;; find a factor of integer n
