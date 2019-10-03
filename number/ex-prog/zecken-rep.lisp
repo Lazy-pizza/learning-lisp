@@ -2,7 +2,7 @@
 
 (require 'asdf)
 (asdf:load-system :lib-num)
-(import 'lib-num:stream-until-k)
+(import 'lib-num:stream-until-cond)
 (import 'lib-num:make-lin-recurr-seq-stream)
 
 ;; This function make the Zeckendorf's representation for n
@@ -11,9 +11,9 @@
 ;; then it gives '(u_{e_1} u_{e_2} ... u_{e_r})
 
 (defun zecken-rep (n)
-  (let ((fibo_lst (reverse (stream-until-k
-			    (make-lin-recurr-seq-stream '(1 1) '(1 1))
-			    n))))
+  (let ((fibo_lst (reverse (stream-until-cond
+			    (lambda (x) (> x n))
+			    (make-lin-recurr-seq-stream '(1 1) '(1 1))))))
     (labels ((f (n lst)
 	       (let ((head (car lst))
 		     (tail (cdr lst)))
