@@ -5,6 +5,8 @@
 (import 'lib-num:rsa-encode)
 (import 'lib-num:rsa-decode)
 
+(setf *random-state* (make-random-state t))
+
 (defun str-to-num (str)
   (let* ((cs (coerce (remove '#\' str) 'list)))
     (reduce (lambda (tmp x) (+ (* 100 tmp) (- (char-code x) 26)))
@@ -27,13 +29,24 @@
 	 (e (car keylst))
 	 (d (car (cdr keylst)))
 	 (n (car (cdr (cdr keylst))))
-	 (s (read)))
+	 (s (read))
+	 (text nil))
     (if (stringp s)
-	(write (num-to-str (rsa-decode
-			    (str-to-num
-			     (num-to-str (rsa-encode (str-to-num s) e n)))
-			    d
-			    n)))
+	(or
+	 (format t "Public keys: (~D,~D)~%" e n)
+	 (format t "Private keys: (~D)~%" d)
+	 (or (format t "Encoded plain text:~% ~S~%"
+		      (setq text (num-to-str
+				  (rsa-encode
+				   (str-to-num s)
+				   e
+				   n))))
+	      (format t "Decoded plain text:~% ~S"
+		      (setq text (num-to-str
+				  (rsa-decode
+				   (str-to-num text)
+				   d
+				   n))))))		
 	(write "Error!"))))
 
 (main)
