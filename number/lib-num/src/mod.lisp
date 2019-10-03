@@ -1,5 +1,17 @@
 (in-package :lib-num)
-;; ***** NUMBER-MOD-EQN *****
+;; ***** NUMBER-MOD *****
+
+
+;; function for calculate modular power in O(lg n) arthimetic process
+;; using the stream for modular power
+
+(defun mod-nth-pow (a n p)
+  (let ((r (mod a p)))
+    (labels ((f (n)
+	       (cond ((= n 0) 1)
+		     ((evenp n) (let ((k (f (/ n 2)))) (rem (* k k) p)))
+		     (t (let ((k (f (- n 1)))) (rem (* r k) p))))))
+      (f n))))
 
 ;; function for solve linear modulus equation
 ;; ex: ax-b \equiv 0 \pmod{n} => (a b n)
@@ -60,16 +72,15 @@
 	   (f (M c h R)
 	     (cond ((= h 0) 0)
 		   ((= h 1) R)
-		   (t (let* ((i (length (stream-until-cond
+		   (t (let* ((i (cdr (stream-find-cond
 					 (lambda (x) (= x 1))
 					 (make-mod-pow-two-stream
 					  h
 					  p))))
-			     (b (car (last (stream-to-lst
-					    (make-mod-pow-two-stream
+			     (b (stream-nth (make-mod-pow-two-stream
 					     c
 					     p)
-					     (- M i)))))
+					     (- M i 1)))
 			     (c (rem (* b b) p)))
 			(f i c (rem (* h c) p) (rem (* R b) p)))))))
     (if (= (- p 1) (Legendre-sym n p)) nil
@@ -87,4 +98,4 @@
   
 
 
-;; ***** NUMBER-MOD-EQN END *****
+;; ***** NUMBER-MOD END *****

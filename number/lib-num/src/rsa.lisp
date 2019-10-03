@@ -9,7 +9,6 @@
 		   ((primep n) n)
 		   (t (gen-prime min max)))))
 
-
 ;; gen-key generate key
 ;; e,n are public key and d is private key
 (defun gen-key (e size)

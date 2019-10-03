@@ -47,6 +47,9 @@
 
 ;; functions for using stream
 
+;; stream-nth
+;; find nth element of the stream
+;; zero-based index
 (defun stream-nth (s n)
   (labels ((f (s i)
 	     (let* ((pr (funcall s))
@@ -55,8 +58,9 @@
 	       (cond ((= i n) v)
 		     ((< i n) (f s (+ i 1)))
 		     (t nil)))))
-    (f s 1)))
+    (f s 0)))
 
+;; make stream-to-lst  
 (defun stream-to-lst (s n)
   (let* ((pr (funcall s))
 	 (v (car pr))
@@ -64,19 +68,21 @@
     (if (= n 0) '()
 	(cons v (stream-to-lst s (- n 1))))))
 
-(defun stream-until-k (s k)
-  (let* ((pr (funcall s))
-	 (v (car pr))
-	 (s (cdr pr)))
-    (if (> v k) '()
-	(cons v (stream-until-k s k)))))
+;; find the first elements which satisfied condition in the stream and it's
+;; index
+;; f must be one element function f:t -> bool
+;; s must be stream thunk
+;; (stream-find-cond f s) => (value . index)
+;; zero-based index
 
 (defun stream-find-cond (f s)
-  (let* ((pr (funcall s))
-	 (v (car pr))
-	 (s (cdr pr)))
-    (if (funcall f v) v
-	(append '() (stream-find-cond f s)))))
+  (labels ((helper (s i)
+	     (let* ((pr (funcall s))
+		    (v (car pr))
+		    (s (cdr pr)))
+    (if (funcall f v) (cons v i)
+	(helper s (+ i 1))))))
+    (helper s 0)))
 
 (defun stream-until-cond (f s)
   (let* ((pr (funcall s))

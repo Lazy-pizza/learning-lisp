@@ -5,7 +5,6 @@
 	   #:make-lin-recurr-seq-stream
 	   #:stream-nth
 	   #:stream-to-lst
-	   #:stream-until-k
 	   #:stream-find-cond
 	   #:stream-until-cond
 	   #:rev-gcd
