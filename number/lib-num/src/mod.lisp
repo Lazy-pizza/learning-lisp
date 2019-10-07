@@ -59,6 +59,26 @@
 (defun Legendre-sym (n p)
   (mod-nth-pow n (/ (- p 1) 2) p))
 
+;; Jacobi Symbol
+;; m must be odd
+(defun Jacobi-sym (n m)
+  (labels ((helper (n m tmp)
+	     (cond ((evenp m) (error "m must be odd integer"))
+		   ((not (= 1 (gcd n m))) 0)
+		   ((< n 0) (helper (- n) m (if (= 1 (mod m 4))
+						tmp
+						(- tmp))))
+		   ((= n 1) tmp)
+		   ((evenp n) (helper (/ n 2) m
+				      (if (or (= 1 (mod m 8)) (= 7 (mod m 8)))
+					  tmp
+					  (- tmp))))
+		   ((< n m) (helper m n (if (or (= 1 (mod n 4)) (= 1 (mod m 4)))
+					    tmp
+					    (- tmp))))
+		   (t (helper (mod n m) m tmp)))))
+    (helper n m 1)))
+
 ;; use Tonelli-Shanks Algorithm to solve quadratic modular equation
 ;; only implemented on prime case
 

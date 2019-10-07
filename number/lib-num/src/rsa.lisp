@@ -3,6 +3,10 @@
 ;; very very simple code for RSA crytosystem
 ;; I use sbcl's random function but you should use better one.
 
+(defun primep (n)
+  (Miller-Rabin-Test (make-random-lst (- n 1) 100) n))
+
+
 (defun gen-prime (min max)
 	   (let ((n (random max)))
 	     (cond ((< n min) (gen-prime min max))

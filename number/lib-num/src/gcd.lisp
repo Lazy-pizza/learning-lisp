@@ -9,7 +9,7 @@
   (labels ((f (a b s1 s2)
 	     (cond ((< a b) (f b a s2 s1))
 		   ((< b 0) (f a (- b) s1 (cons (- (car s2)) (- (cdr s2)))))
-		   ((= b 0) (cons (list a) s1))
+		   ((zerop b) (cons (list a) s1))
 		   (t (multiple-value-bind (q r) (floor a b)
 					  (f b
 					     r

@@ -15,6 +15,13 @@
 		     (f (+ n 1)))))))
     (lambda () (f 2))))
 
+;; only used for Baillie-PSW test
+(defvar *PSW-stream*
+  (labels ((f (tmp i)
+	     (if (oddp i) (cons tmp (lambda () (f (+ -2 (- tmp)) (+ i 1))))
+		 (cons tmp (lambda () (f (+ 2 (- tmp)) (+ i 1)))))))
+    (lambda () (f 5 1))))
+
 ;; function for generate a stream for modular power
 ;; a**(2**i) (mod p)
 
