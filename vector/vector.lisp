@@ -36,5 +36,11 @@
 				(append basis (list pj)))
 			    tail)))))))
     (f '() vs)))
-					   
+
+						
+			      
+	    
+
+
+
   

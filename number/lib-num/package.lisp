@@ -15,8 +15,11 @@
 	   #:lin-mod-eqn-solver
 	   #:CRT-Solver
 	   #:Legendre-sym
+	   #:Jacobi-sym
 	   #:quad-mod-eqn-solver
-	   #:Rabin-Miller-Test
+	   #:Lucas-Lehmer-Test
+	   #:Miller-Rabin-Test
+	   #:Baillie-PSW-Test
 	   #:primep
 	   #:pollard-rho-method
 	   #:full-factor
