@@ -19,6 +19,7 @@
 	   #:quad-mod-eqn-solver
 	   #:Lucas-Lehmer-Test
 	   #:Miller-Rabin-Test
+	   #:Lucas-Strong-Probable-Prime-Test
 	   #:Baillie-PSW-Test
 	   #:primep
 	   #:pollard-rho-method
