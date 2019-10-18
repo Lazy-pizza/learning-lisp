@@ -9,7 +9,7 @@
 
 (defun str-to-num (str)
   (let* ((cs (coerce str 'list)))
-    (reduce (lambda (tmp x) (+ (* 100 tmp) (- (char-code x) 17)))
+    (reduce (lambda (tmp x) (+ (* 100 tmp) (- (char-code x) 26)))
 	    cs :initial-value 0)))
 
 (defun num-to-str (num)
@@ -18,14 +18,14 @@
 		 (multiple-value-bind (p r) (floor n 100)
 		   (cons r (f p))))))
     (coerce
-     (reduce (lambda (tmp x) (cons (code-char (+ x 17)) tmp))
+     (reduce (lambda (tmp x) (cons (code-char (+ x 26)) tmp))
 	     (f num)
 	     :initial-value '())
      'string)))
 
 
 (defun main ()
-  (let* ((keylst (gen-key 65537 500))
+  (let* ((keylst (gen-key 65537 100))
 	 (e (car keylst))
 	 (d (car (cdr keylst)))
 	 (n (car (cdr (cdr keylst))))
