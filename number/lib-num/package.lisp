@@ -24,6 +24,7 @@
 	   #:primep
 	   #:pollard-rho-method
 	   #:full-factor
+	   #:gauss-prime-factor
 	   #:decomp-permu
 	   #:sgn-permu
 	   #:gen-prime

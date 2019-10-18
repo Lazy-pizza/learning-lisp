@@ -5,9 +5,11 @@
 ;; Sieve of Eratosthenes
 (defvar *prime-stream*
   (labels ((f (n)
+	     (declare (integer n))
 	     (labels ((g (i)
+			(declare (integer i))
 			(cond ((> i (floor (sqrt n))) n)
-			      ((= 0 (rem n i)) nil)
+			      ((zerop (rem n i)) nil)
 			      (t (g (+ i 1))))))
 	       (let ((prime (g 2)))
 		 (if prime
@@ -18,6 +20,7 @@
 ;; only used for Baillie-PSW test
 (defvar *PSW-stream*
   (labels ((f (tmp i)
+	     (declare (integer tmp i))
 	     (if (oddp i) (cons tmp (lambda () (f (+ -2 (- tmp)) (+ i 1))))
 		 (cons tmp (lambda () (f (+ 2 (- tmp)) (+ i 1)))))))
     (lambda () (f 5 1))))
@@ -26,8 +29,10 @@
 ;; a**(2**i) (mod p)
 
 (defun make-mod-pow-two-stream (a p)
+  (declare (integer a p))
   "Make a**(2**i) (mod p) stream, use stream-to-lst to get elements"
   (labels ((f (n)
+	     (declare (integer n))
 	     (let ((k (rem n p)))
 	       (cons k (lambda () (f (* k k)))))))
     (lambda () (f (mod a p)))))
@@ -58,7 +63,9 @@
 ;; find nth element of the stream
 ;; zero-based index
 (defun stream-nth (s n)
+  (declare (function s))
   (labels ((f (s i)
+	     (declare (function s))
 	     (let* ((pr (funcall s))
 		    (v (car pr))
 		    (s (cdr pr)))
@@ -69,6 +76,7 @@
 
 ;; make stream-to-lst  
 (defun stream-to-lst (s n)
+  (declare (function s))
   (let* ((pr (funcall s))
 	 (v (car pr))
 	 (s (cdr pr)))
@@ -83,7 +91,9 @@
 ;; zero-based index
 
 (defun stream-find-cond (f s)
+  (declare (function f s))
   (labels ((helper (s i)
+	     (declare (function f s))
 	     (let* ((pr (funcall s))
 		    (v (car pr))
 		    (s (cdr pr)))
@@ -92,6 +102,7 @@
     (helper s 0)))
 
 (defun stream-until-cond (f s)
+  (declare (function f s))
   (let* ((pr (funcall s))
 	 (v (car pr))
 	 (s (cdr pr)))
