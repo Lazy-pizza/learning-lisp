@@ -8,7 +8,7 @@
 	     (declare (integer n))
 	     (labels ((g (i)
 			(declare (integer i))
-			(cond ((> i (floor (sqrt n))) n)
+			(cond ((> i (isqrt n)) n)
 			      ((zerop (rem n i)) nil)
 			      (t (g (+ i 1))))))
 	       (let ((prime (g 2)))

@@ -139,7 +139,7 @@
 (defun full-factor (n)
   (declare (integer n))
   (cond ((= n 1) '())
-	((Rabin-Miller-Test '(2 3 5 7 11 13 17 19 23 29 31 37 41) n)
+	((Miller-Rabin-Test '(2 3 5 7 11 13 17 19 23 29 31 37 41) n)
 	 (cons n '()))
 	(t (let ((ans (pollard-rho-method 3 10 1 n)))
 	     (cons ans (full-factor (/ n ans)))))))
